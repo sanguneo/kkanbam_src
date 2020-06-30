@@ -1,0 +1,61 @@
+<template>
+  <div>
+    <Gapi />
+    <Nuxt />
+  </div>
+</template>
+<script>
+export default {
+  name: 'Default',
+};
+</script>
+
+<style lang="scss">
+#__nuxt {
+  width: 100%;
+  height: 100%;
+}
+#__layout {
+  box-sizing: border-box;
+  padding: 0 10px;
+  width: 100%;
+  height: 100%;
+  line-height: 25px;
+  display: flex;
+  justify-content: center;
+  background-image: linear-gradient(to right, white 10px, transparent 10px),
+    linear-gradient(to left, white 10px, transparent 10px),
+    repeating-linear-gradient(
+      white,
+      white 24px,
+      #cccccc 24px,
+      #cccccc 25px,
+      white 25px
+    );
+  background-attachment: local;
+  font-size: 14px;
+  & > .googleButton {
+    position: absolute;
+    right: 10px;
+    &.inactive {
+      color: gray;
+    }
+  }
+  & > .logout {
+    position: absolute;
+    right: 10px;
+    height: fit-content;
+  }
+  & > .commute {
+    position: absolute;
+    left: 10px;
+    height: fit-content;
+  }
+  & > .debug {
+    position: absolute;
+    right: 10px;
+    height: fit-content;
+    text-align: right;
+  }
+}
+</style>
