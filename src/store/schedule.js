@@ -1,4 +1,5 @@
 import moment from 'moment';
+import 'twix';
 import { axiosInstance } from '../apis/commonApi';
 import { getStorageAlbam, setStorageAlbam } from '../shared/utils/Storage';
 import exceptedDay from '../shared/exceptedDay.json';
@@ -23,6 +24,14 @@ export default {
     },
     albamSchedule(state) {
       return state.albamSchedule;
+    },
+    schedule(state) {
+      return [
+        ...state.calenderSchedule.filter(({ date }) =>
+          date.startsWith(state.albamSchedule[0].date.slice(0, 7))
+        ),
+        ...state.albamSchedule,
+      ].sort((a, b) => a.date.localeCompare(b.date));
     },
   },
 
@@ -99,10 +108,12 @@ export default {
           .filter((event) => !exceptedDay.includes(event.summary))
           .map(({ csum, start, end, summary }) => ({
             desc: csum,
+            date: start.date,
             start: start.date || start.dateTime.split('T')[0],
             end: moment(end.date).subtract(1, 'days').format('YYYY-MM-DD'),
             summary,
           }))
+
           .filter(({ desc, summary }) => {
             if (desc === 'UB Vacation') {
               return (
@@ -122,7 +133,26 @@ export default {
               return summary.includes('나상권');
             }
           })
-          .sort((a, b) => a.start.localeCompare(b.start));
+          .map((item) => {
+            if (item.start === item.end) return item;
+            const range = [];
+            const itr = moment(moment(item.start))
+              .twix(moment(item.end))
+              .iterate('days');
+            while (itr.hasNext()) {
+              const date = itr.next().format('YYYY-MM-DD');
+              range.push({
+                desc: item.desc,
+                date,
+                start: date,
+                summary: item.summary,
+              });
+            }
+            return range;
+          })
+          .flat(2)
+          .sort((a, b) => a.date.localeCompare(b.date));
+        // console.dir()
         store.commit('setCalenderSchedule', calenderSchedule);
       });
     },
@@ -152,7 +182,7 @@ export default {
                 : prompt('이름을 찾을 수 없습니다. 이름을 입력해주세요.');
             setStorageAlbam('username', { username });
           }
-          const p_rolls = [
+          const albamSchedule = [
             ...rolls
               .filter(
                 ({ adjust_start_time, start_time }) =>
@@ -165,7 +195,7 @@ export default {
             if (a.datetime > b.datetime) return 1;
             return 0;
           });
-          const todayRoll = p_rolls
+          const todayRoll = albamSchedule
             .filter(({ date }) => date === moment().format('YYYY-MM-DD'))
             .pop();
           // const todayRoll = [].pop();
@@ -175,15 +205,17 @@ export default {
             todayRoll.leave !== null
               ? todayRoll.leave
               : 1;
-          p_rolls.forEach((e, i, a) => {
+          albamSchedule.forEach((e, i, a) => {
             if (i === 0) return;
             if (a[i].date === a[i - 1].date) {
               // eslint-disable-next-line no-param-reassign
               a[i].rework = true;
             }
           });
-          const totalMs = p_rolls.reduce((p, n) => p + n.duration, 0);
-          console.log(p_rolls, totalMs);
+          const totalMs = albamSchedule.reduce((p, n) => p + n.duration, 0);
+          // console.log(albamSchedule, totalMs);
+          // console.dir(albamSchedule);
+          store.commit('setAlbamSchedule', albamSchedule);
         });
     },
   },
