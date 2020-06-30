@@ -12,6 +12,16 @@ body {
   height: 100%;
   width: 100%;
   font-family: "Courier New";
+  background-size: 100% 900%;
+  background-image: linear-gradient(to right, white 10px, transparent 10px),
+  linear-gradient(to left, white 10px, transparent 10px),
+  repeating-linear-gradient(
+    white,
+    white 24px,
+    #cccccc 24px,
+    #cccccc 25px,
+    white 25px
+  );
 }
 
 #root {

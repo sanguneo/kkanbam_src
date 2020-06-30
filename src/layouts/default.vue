@@ -23,16 +23,7 @@ export default {
   line-height: 25px;
   display: flex;
   justify-content: center;
-  background-image: linear-gradient(to right, white 10px, transparent 10px),
-    linear-gradient(to left, white 10px, transparent 10px),
-    repeating-linear-gradient(
-      white,
-      white 24px,
-      #cccccc 24px,
-      #cccccc 25px,
-      white 25px
-    );
-  background-attachment: local;
+
   font-size: 14px;
   & > .googleButton {
     position: absolute;
