@@ -13,6 +13,9 @@ export default {
   },
 
   getters: {
+    account(state) {
+      return state.account;
+    },
     isLogin(state) {
       return !!state.loginToken;
     },
@@ -31,9 +34,10 @@ export default {
         state.loginToken = null;
         return;
       }
-      const { account, loginToken } = user;
+      const { account, loginToken, username } = user;
       state.account = account;
       state.loginToken = loginToken;
+      state.username = username;
     },
     setLoginToken(state, loginToken) {
       state.loginToken = loginToken;

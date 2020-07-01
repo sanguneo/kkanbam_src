@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="defaultlayout">
     <Gapi />
     <Nuxt />
   </div>
@@ -49,4 +49,7 @@ export default {
     text-align: right;
   }
 }
+  .defaultlayout {
+    width: 100%;
+  }
 </style>

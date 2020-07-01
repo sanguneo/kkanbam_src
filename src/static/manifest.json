@@ -1,0 +1,20 @@
+{
+  "short_name": "깐밤 v2.0",
+  "name": "깐밤(알밤계산기) v2.0",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#97c75b",
+  "background_color": "#ffffff"
+}

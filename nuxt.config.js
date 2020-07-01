@@ -14,7 +14,7 @@ export default {
    ** See https://nuxtjs.org/api/configuration-head
    */
   head: {
-    title: process.env.npm_package_name || 'vue_kkanbam',
+    title: '깐밤 2.0',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -27,6 +27,7 @@ export default {
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
       { rel: 'stylesheet', type: 'text/css', href: '/css/index.css' },
+      { rel: 'manifest', type: 'text/css', href: '/manifest.json' },
     ],
   },
   srcDir: 'src/',

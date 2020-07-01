@@ -46,6 +46,11 @@ export default {
 
   actions: {
     fetchGoogleCalender(store) {
+      let { username } = getStorageAlbam();
+      if (!username || username === '') {
+        username = prompt('이름을 찾을 수 없습니다. 이름을 입력해주세요.');
+        setStorageAlbam('username', { username });
+      }
       const { gapi } = window;
       const cdate = new Date();
       const date = new Date(cdate.getTime() + 6 * 30 * 24 * 60 * 60 * 1000);
@@ -117,7 +122,7 @@ export default {
           .filter(({ desc, summary }) => {
             if (desc === 'UB Vacation') {
               return (
-                (summary.includes('나상권') &&
+                (summary.includes(username) &&
                   (summary.includes('오전') ||
                     summary.includes('오후') ||
                     summary.includes('반차') ||
@@ -126,11 +131,11 @@ export default {
               );
             } else if (desc === 'UB 기념하는 날') {
               return (
-                summary.includes('나상권') &&
+                summary.includes(username) &&
                 (summary.includes('생일') || summary.includes('기념일'))
               );
             } else if (desc === 'UB 재택근무') {
-              return summary.includes('나상권');
+              return summary.includes(username);
             }
           })
           .map((item) => {
@@ -216,6 +221,68 @@ export default {
           // console.log(albamSchedule, totalMs);
           // console.dir(albamSchedule);
           store.commit('setAlbamSchedule', albamSchedule);
+        });
+    },
+    commute(store) {
+      const loginToken = store.rootGetters['user/loginToken'];
+      axiosInstance.defaults.headers['access-token'] = loginToken.token;
+      axiosInstance
+        .post('/api/v3/rolls/commuteList', [
+          {
+            bssid: '',
+            checked_beacon: 1,
+            commute_flag: 1,
+            commute_time: moment().format('YYYY-MM-DD hh:mm:ss ZZ'),
+            device_address: 'EE:61:06:47:8D:2C',
+            device_model: 'SM-N960N',
+            device_uuid: 'b0d2c984ede18181',
+            device_key: '64401',
+            off_line: 0,
+            ssid: '',
+            store_id: 213050,
+            wifi: 0,
+            timezone_id: 'Asia/Seoul',
+          },
+        ])
+        .then(({ data }) => {
+          if (data.return_code !== 200) {
+            alert('잘못된 응답입니다.');
+            throw new Error('잘못된 응답입니다.');
+          }
+          alert('출근 체크 되었습니다.');
+          window.location.reload();
+          return data;
+        });
+    },
+    leave(store) {
+      const loginToken = store.rootGetters['user/loginToken'];
+      axiosInstance.defaults.headers['access-token'] = loginToken.token;
+      axiosInstance
+        .post('/api/v3/rolls/commuteList', [
+          {
+            bssid: '',
+            checked_beacon: 1,
+            commute_flag: 2,
+            commute_time: moment().format('YYYY-MM-DD hh:mm:ss ZZ'),
+            device_address: 'EE:61:06:47:8D:2C',
+            device_model: 'SM-N960N',
+            device_uuid: 'b0d2c984ede18181',
+            device_key: '64401',
+            off_line: 0,
+            ssid: '',
+            store_id: 213050,
+            wifi: 0,
+            timezone_id: 'Asia/Seoul',
+          },
+        ])
+        .then(({ data }) => {
+          if (data.return_code !== 200) {
+            alert('잘못된 응답입니다.');
+            throw new Error('잘못된 응답입니다.');
+          }
+          alert('퇴근 체크 되었습니다.');
+          window.location.reload();
+          return data;
         });
     },
   },
