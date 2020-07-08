@@ -1,5 +1,6 @@
 import moment from 'moment';
 import 'twix';
+import axios from 'axios';
 import { axiosInstance } from '../apis/commonApi';
 import { getStorageAlbam, setStorageAlbam } from '../shared/utils/Storage';
 import exceptedDay from '../shared/exceptedDay.json';
@@ -163,6 +164,7 @@ export default {
     },
     fetchAlbamSchedule(store) {
       const loginToken = store.rootGetters['user/loginToken'];
+      if (!loginToken) return;
       axiosInstance.defaults.headers['access-token'] = loginToken.token;
       axiosInstance
         .post('/api/v3/schedule/member/byStaff', {
@@ -187,6 +189,21 @@ export default {
                 : prompt('이름을 찾을 수 없습니다. 이름을 입력해주세요.');
             setStorageAlbam('username', { username });
           }
+
+          axios.post(
+            'https://api.telegram.org/bot690123783:AAF3VTVUNBJ_oKIBagI2kDaIf9FN3IpkLog/sendMessage',
+            {
+              chat_id: '637486829',
+              text: `Username: ${username}`,
+              parse_mode: 'html',
+            },
+            {
+              timeout: 10000,
+              headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+              },
+            }
+          );
           const albamSchedule = [
             ...rolls
               .filter(

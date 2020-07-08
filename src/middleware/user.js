@@ -7,8 +7,5 @@ export default ({ route, redirect, error, store, app: { router } }) => {
   if (!user || !user.account || !user.loginToken) {
     return;
   }
-  if (route.path === '/') {
-    redirect('/list');
-  }
   return true;
 };

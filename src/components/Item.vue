@@ -61,9 +61,7 @@ export default {
   }
 }
 .spread {
-  &:not(:first-child) {
-    margin-top: 25px;
-  }
+  margin-top: 25px;
   font-weight: bolder;
   font-style: italic;
   &:before {

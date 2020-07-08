@@ -3,12 +3,12 @@ export default {
    ** Nuxt rendering mode
    ** See https://nuxtjs.org/api/configuration-mode
    */
-  mode: 'spa',
+  // mode: 'spa',
   /*
    ** Nuxt target
    ** See https://nuxtjs.org/api/configuration-target
    */
-  target: 'static',
+  // target: 'static',
   /*
    ** Headers of the page
    ** See https://nuxtjs.org/api/configuration-head
@@ -54,6 +54,7 @@ export default {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
   ],
+  buildModules: ['@nuxtjs/pwa'],
   /*
    ** Build configuration
    */
