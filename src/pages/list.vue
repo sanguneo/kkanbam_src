@@ -27,17 +27,19 @@
       <br />
       WorkToGo : {{ need | msToTime }}<br />
       Worked : {{ mine | msToTime }}<br />
-      Remain : {{ remain }}<br />
-    </div>
-    <div
-      v-if="
-        account.startsWith('sknah') || account.startsWith('gyu') || myip.office
-      "
-      :style="{ top: top + 'px' }"
-      @click="commuteLeave"
-      class="commute"
-    >
-      {{ leaved ? 'Commute' : 'Leave' }}
+      Remain : {{ remain }}<br /><br />
+      <span
+        v-if="
+          account.startsWith('sknah') ||
+          account.startsWith('gyu') ||
+          myip.office
+        "
+        @click="commuteLeave"
+        href="javascript:;"
+        class="commute"
+      >
+        {{ leaved ? 'Commute' : 'Leave' }} </span
+      ><br />
     </div>
     <!--    {(state.account.startsWith('sknah') || connectionState.office) && (leaved !== -1 && (leaved === 0-->
     <!--    ? <div className="commute" style={{ top }} onClick={leave}>Leave</div>-->
@@ -203,9 +205,9 @@ export default {
       }
     }
   }
-  .commute {
-    position: fixed;
-  }
+  /*.commute {*/
+  /*  position: fixed;*/
+  /*}*/
   .debug {
     position: fixed;
     right: 25px;
