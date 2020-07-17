@@ -100,12 +100,19 @@ export default {
     },
     schedule() {
       const weekList = weeksOnMonth();
+      window.getW = ()=>console.log(weekList);
       return this.$store.getters['schedule/schedule'].map((item) => {
+        let weekFirst = false;
+        const shift = weekList.findIndex(week => week === moment(item.date).week());
+        if (shift) {
+          for (let cnt = 0; cnt < shift; cnt++) {
+            weekFirst = !!weekList.shift();
+          }
+        }
         return {
           ...item,
           week: moment(item.date).week(),
-          weekFirst:
-            moment(item.date).week() === weekList[0] && !!weekList.shift(),
+          weekFirst,
         };
       });
     },
