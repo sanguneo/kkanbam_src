@@ -29,11 +29,7 @@
       Worked : {{ mine | msToTime }}<br />
       Remain : {{ remain }}<br /><br />
       <span
-        v-if="
-          account.startsWith('sknah') ||
-          account.startsWith('gyu') ||
-          myip.office
-        "
+        v-if="account.startsWith('sknah') || account.startsWith('gyu')"
         @click="commuteLeave"
         href="javascript:;"
         class="commute"
@@ -100,10 +96,11 @@ export default {
     },
     schedule() {
       const weekList = weeksOnMonth();
-      window.getW = ()=>console.log(weekList);
-      return this.$store.getters['schedule/schedule'].map((item) => {
+      return this.$store.getters['schedule/schedule'].map((item, i) => {
         let weekFirst = false;
-        const shift = weekList.findIndex(week => week === moment(item.date).week());
+        const shift = weekList.findIndex(
+          (week) => week === moment(item.date).week()
+        );
         if (shift) {
           for (let cnt = 0; cnt < shift; cnt++) {
             weekFirst = !!weekList.shift();
@@ -112,7 +109,7 @@ export default {
         return {
           ...item,
           week: moment(item.date).week(),
-          weekFirst,
+          weekFirst: i === 0 || weekFirst,
         };
       });
     },

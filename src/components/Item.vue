@@ -4,9 +4,9 @@
       {{ weekIndex }}주차 {{ spreaded ? '접기' : '펼치기' }}
     </div>
     <span class="durationString">
-      {{ !sameDate && `${date}${isToday ? '_today_' : ''}` }}
+      {{ !sameDate ? `${date}${isToday ? '_today_' : ''}` : '' }}
     </span>
-    <br />
+    <br v-if="!sameDate" />
     <span>
       {{
         !isFromCalendar
