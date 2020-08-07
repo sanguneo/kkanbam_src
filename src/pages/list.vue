@@ -6,7 +6,7 @@
       <!--      {moment(scheduleState.thisMonday).format('YYYY-MM-DD')} ~ {moment(scheduleState.thisMonday + 518400000).format('YYYY-MM-DD')}-->
       <!--      <span onClick={() => scheduleActions.moveWeek('n')}> N</span>-->
     </div>
-    <div contentEditable class="content">
+    <div class="content">
       {{ schedule.length === 0 ? '작성된 일정이 없습니다.' : '' }}
       <br v-if="schedule.length === 0" />
       <Item
