@@ -16,7 +16,10 @@ export default {
   },
   computed: {
     googleLoggedIn() {
-      return this.$store.getters['user/googleLoggedIn'];
+      return (
+        this.$store.getters['user/isLogin'] &&
+        this.$store.getters['user/googleLoggedIn']
+      );
     },
   },
   mounted() {

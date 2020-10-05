@@ -245,7 +245,7 @@ export default {
     commute(store) {
       const loginToken = store.rootGetters['user/loginToken'];
       axiosInstance.defaults.headers['access-token'] = loginToken.token;
-      axiosInstance
+      return axiosInstance
         .post('/api/v3/rolls/commuteList', [
           {
             bssid: '',
@@ -265,18 +265,17 @@ export default {
         ])
         .then(({ data }) => {
           if (data.return_code !== 200) {
-            alert('잘못된 응답입니다.');
             throw new Error('잘못된 응답입니다.');
           }
           alert('출근 체크 되었습니다.');
-          window.location.reload();
           return data;
-        });
+        })
+        .catch((err) => err);
     },
     leave(store) {
       const loginToken = store.rootGetters['user/loginToken'];
       axiosInstance.defaults.headers['access-token'] = loginToken.token;
-      axiosInstance
+      return axiosInstance
         .post('/api/v3/rolls/commuteList', [
           {
             bssid: '',
@@ -296,13 +295,12 @@ export default {
         ])
         .then(({ data }) => {
           if (data.return_code !== 200) {
-            alert('잘못된 응답입니다.');
             throw new Error('잘못된 응답입니다.');
           }
           alert('퇴근 체크 되었습니다.');
-          window.location.reload();
           return data;
-        });
+        })
+        .catch((err) => err);
     },
   },
 };

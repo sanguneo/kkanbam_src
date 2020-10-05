@@ -28,12 +28,7 @@
       WorkToGo : {{ need | msToTime }}<br />
       Worked : {{ mine | msToTime }}<br />
       Remain : {{ remain }}<br /><br />
-      <span
-        v-if="account.startsWith('sknah') || account.startsWith('gyu')"
-        @click="commuteLeave"
-        href="javascript:;"
-        class="commute"
-      >
+      <span @click="commuteLeave" class="commute">
         {{ leaved ? 'Commute' : 'Leave' }} </span
       ><br />
     </div>
@@ -44,6 +39,7 @@
       {{ myip.ip }}
     </div>
     <div :style="{ top: top + 'px' }" class="logout">Logout</div>
+    <div v-show="fetching" class="fetching"></div>
   </div>
 </template>
 
@@ -76,6 +72,7 @@ export default {
   },
   data() {
     return {
+      fetching: false,
       weeksOnMonth: Object.fromEntries(
         weeksOnMonth().map((value) => [value, true])
       ),
@@ -173,12 +170,14 @@ export default {
     spread(week) {
       this.weeksOnMonth[week] = !this.weeksOnMonth[week];
     },
-    commuteLeave() {
+    async commuteLeave() {
+      this.fetching = true;
       if (this.leaved) {
-        this.$store.dispatch('schedule/commute');
+        await this.$store.dispatch('schedule/commute');
       } else {
-        this.$store.dispatch('schedule/leave');
+        await this.$store.dispatch('schedule/leave');
       }
+      this.fetching = false;
     },
   },
 };
@@ -219,6 +218,15 @@ export default {
   .logout {
     position: fixed;
     right: 25px;
+  }
+  .fetching {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(#ffffff, 0.5);
+    z-index: 12800;
   }
 }
 </style>
