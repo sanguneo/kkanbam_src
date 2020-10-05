@@ -7,13 +7,13 @@
     "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
     "client_secret": "FCMenu_fGoETBPuEYh3n9K-T",
     "redirect_uris": [
-      "https://kkanbam.urbanbase.com",
+      "https://sanguneo.github.io",
       "http://localhost",
       "http://localhost:3000",
       "http://10.50.101.83:3000"
     ],
     "javascript_origins": [
-      "https://kkanbam.urbanbase.com",
+      "https://sanguneo.github.io",
       "http://localhost",
       "http://localhost:3000",
       "http://10.50.101.83:3000"

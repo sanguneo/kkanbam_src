@@ -127,8 +127,10 @@ export default {
                   (summary.includes('오전') ||
                     summary.includes('오후') ||
                     summary.includes('반차') ||
-                    summary.includes('연차'))) ||
-                (!summary.includes('대체') && summary.includes('휴무'))
+                    summary.includes('연차') ||
+                    summary.includes('휴무'))) ||
+                (!summary.includes('대체') && summary.includes('휴무')) ||
+                summary.includes('공휴일')
               );
             } else if (desc === 'UB 기념하는 날') {
               return (
