@@ -1,7 +1,3 @@
-# itemflyer-web
-
-> ItemFlyer의 Web Project
-
 ## Build Setup
 
 ``` bash
