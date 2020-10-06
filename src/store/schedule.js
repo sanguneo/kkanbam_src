@@ -97,7 +97,7 @@ export default {
       ); // 재택근무
       clientBatch.add(
         gapi.client.calendar.events.list(
-          config('ko.south_korea#holiday@group.v.calendar.google.com')
+          config('ltm0jrlsamv8mlhrg0bpcgu6ps@group.calendar.google.com')
         )
       );
       clientBatch.then(({ result }) => {
@@ -139,6 +139,8 @@ export default {
               );
             } else if (desc === 'UB 재택근무') {
               return summary.includes(username);
+            } else if (desc === '달력기준 공휴일') {
+              return true;
             }
           })
           .map((item) => {
