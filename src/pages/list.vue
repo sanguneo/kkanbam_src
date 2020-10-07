@@ -159,8 +159,8 @@ export default {
       _this.myip = this.toJSON();
     };
   },
-  mounted() {
-    this.$store.dispatch('schedule/fetchAlbamSchedule');
+  async mounted() {
+    if (this.$store.getters['user/isLogin']) await this.$store.dispatch('schedule/fetchAlbamSchedule');
     window.addEventListener('resize', () => {
       this.top = (Math.floor(window.innerHeight / 25) - 1) * 25;
     });
@@ -171,12 +171,14 @@ export default {
       this.weeksOnMonth[week] = !this.weeksOnMonth[week];
     },
     async commuteLeave() {
+      if (!confirm(`정말 ${this.leaved ? '출근' : '퇴근'}하시겠습니까?\n한번만 누르고, 알밤앱에서 꼭 확인하세요.`)) return;
       this.fetching = true;
       if (this.leaved) {
         await this.$store.dispatch('schedule/commute');
       } else {
         await this.$store.dispatch('schedule/leave');
       }
+      await this.$store.dispatch('schedule/fetchAlbamSchedule');
       this.fetching = false;
     },
   },

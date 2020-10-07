@@ -23,17 +23,16 @@ export default {
         name: 'description',
         content: process.env.npm_package_description || '',
       },
-      { name: 'google-site-verification', content: 'Vb__cEIYQ3pYkk_srBtPJl6crTKrL9qbyvGA-CQ3Tfw'}
+      { name: 'google-site-verification', content: 'NlpMce1AonjN_QaimAB2y0iXctqbkQV0q0wYs6GOpuY'},
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: 'favicon.ico' },
-      { rel: 'stylesheet', type: 'text/css', href: 'css/index.css' },
-      { rel: 'manifest', type: 'text/css', href: 'manifest.json' },
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', type: 'text/css', href: '/css/index.css' },
+      { rel: 'manifest', type: 'text/css', href: '/manifest.json' },
     ],
   },
   srcDir: 'src/',
   router: {
-    base: '/kkanbam/',
     middleware: ['user'],
   },
   /*

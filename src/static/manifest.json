@@ -13,7 +13,7 @@
       "type": "image/png"
     }
   ],
-  "start_url": ".",
+  "start_url": "https://kkanbam.sanguneo.com",
   "display": "standalone",
   "theme_color": "#97c75b",
   "background_color": "#ffffff"

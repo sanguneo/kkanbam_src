@@ -170,7 +170,7 @@ export default {
       const loginToken = store.rootGetters['user/loginToken'];
       if (!loginToken) return;
       axiosInstance.defaults.headers['access-token'] = loginToken.token;
-      axiosInstance
+      return axiosInstance
         .post('/api/v3/schedule/member/byStaff', {
           end_time: getLastDayOfMonth(),
           start_time: getFirstDayOfMonth(),
@@ -221,16 +221,16 @@ export default {
             if (a.datetime > b.datetime) return 1;
             return 0;
           });
-          const todayRoll = albamSchedule
-            .filter(({ date }) => date === moment().format('YYYY-MM-DD'))
-            .pop();
+          // const todayRoll = albamSchedule
+          //   .filter(({ date }) => date === moment().format('YYYY-MM-DD'))
+          //   .pop();
           // const todayRoll = [].pop();
-          const leaved =
-            todayRoll &&
-            todayRoll.leave !== undefined &&
-            todayRoll.leave !== null
-              ? todayRoll.leave
-              : 1;
+          // const leaved =
+          //   todayRoll &&
+          //   todayRoll.leave !== undefined &&
+          //   todayRoll.leave !== null
+          //     ? todayRoll.leave
+          //     : 1;
           albamSchedule.forEach((e, i, a) => {
             if (i === 0) return;
             if (a[i].date === a[i - 1].date) {
@@ -238,10 +238,11 @@ export default {
               a[i].rework = true;
             }
           });
-          const totalMs = albamSchedule.reduce((p, n) => p + n.duration, 0);
+          // const totalMs = albamSchedule.reduce((p, n) => p + n.duration, 0);
           // console.log(albamSchedule, totalMs);
           // console.dir(albamSchedule);
           store.commit('setAlbamSchedule', albamSchedule);
+          return albamSchedule;
         });
     },
     commute(store) {
