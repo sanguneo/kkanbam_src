@@ -120,7 +120,7 @@ export default {
             summary,
           }))
 
-          .filter(({ desc, summary }) => {
+          .filter(({ desc, summary, date }) => {
             if (desc === 'UB Vacation') {
               return (
                 (summary.includes(username) &&
@@ -140,7 +140,7 @@ export default {
             } else if (desc === 'UB 재택근무') {
               return summary.includes(username);
             } else if (desc === '달력기준 공휴일') {
-              return true;
+              return new Date(date).getDay() < 6;
             }
           })
           .map((item) => {
