@@ -113,6 +113,7 @@ export default {
     leaved() {
       return (
         (this.schedule &&
+        this.schedule.length > 0 &&
         this.schedule.filter((e) => !e.summary) &&
         this.schedule.filter((e) => !e.summary).slice(-1)[0] &&
         this.schedule.filter((e) => !e.summary).slice(-1)[0].leave
@@ -128,7 +129,7 @@ export default {
             (curr.summary.includes('반차') ||
             curr.summary.includes('오전') ||
             curr.summary.includes('오후')
-              ? 14400000
+              ? 18000000
               : 32400000))
         );
       }, 0);
@@ -160,7 +161,8 @@ export default {
     };
   },
   async mounted() {
-    if (this.$store.getters['user/isLogin']) await this.$store.dispatch('schedule/fetchAlbamSchedule');
+    if (this.$store.getters['user/isLogin'])
+      await this.$store.dispatch('schedule/fetchAlbamSchedule');
     window.addEventListener('resize', () => {
       this.top = (Math.floor(window.innerHeight / 25) - 1) * 25;
     });
@@ -171,7 +173,14 @@ export default {
       this.weeksOnMonth[week] = !this.weeksOnMonth[week];
     },
     async commuteLeave() {
-      if (!confirm(`정말 ${this.leaved ? '출근' : '퇴근'}하시겠습니까?\n한번만 누르고, 알밤앱에서 꼭 확인하세요.`)) return;
+      if (
+        !confirm(
+          `정말 ${
+            this.leaved ? '출근' : '퇴근'
+          }하시겠습니까?\n한번만 누르고, 알밤앱에서 꼭 확인하세요.`
+        )
+      )
+        return;
       this.fetching = true;
       if (this.leaved) {
         await this.$store.dispatch('schedule/commute');
