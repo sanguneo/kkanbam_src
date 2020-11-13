@@ -156,7 +156,7 @@ export default {
     },
     daywork() {
       return msToTime(
-        Array.from(new Set(this.schedule.map((e) => e.date))) *
+        Array.from(new Set(this.schedule.map((e) => e.date))).length *
           9 *
           60 *
           60 *
