@@ -27,6 +27,7 @@
       <br />
       WorkToGo : {{ need | msToTime }}<br />
       Worked : {{ mine | msToTime }}<br />
+      Fully : {{ daywork }}<br />
       Remain : {{ remain }}<br /><br />
       <span @click="commuteLeave" class="commute">
         {{ leaved ? 'Commute' : 'Leave' }} </span
@@ -151,6 +152,15 @@ export default {
       return (
         (this.need < this.mine ? '(초과)' : '') +
         msToTime(Math.abs(this.need - this.mine))
+      );
+    },
+    daywork() {
+      return msToTime(
+        Array.from(new Set(this.schedule.map((e) => e.date))) *
+          9 *
+          60 *
+          60 *
+          1000
       );
     },
   },
