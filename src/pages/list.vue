@@ -56,7 +56,7 @@ import '../shared/myip';
 function weeksOnMonth() {
   const fw = moment(getFirstDayOfMonth()).week();
   const lw = moment(getLastDayOfMonth()).week();
-  return Array(lw - fw + 1)
+  return Array(fw < lw ? lw - fw + 1 : 5)
     .fill(null)
     .map((_, i) => i + fw);
 }
