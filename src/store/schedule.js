@@ -129,6 +129,7 @@ export default {
                     summary.includes('반차') ||
                     summary.includes('연차') ||
                     summary.includes('대체') ||
+                    summary.includes('휴가') ||
                     summary.includes('휴무'))) ||
                 (!summary.includes('대체') && summary.includes('휴무')) ||
                 summary.includes('공휴일') ||
