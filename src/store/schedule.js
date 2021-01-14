@@ -121,6 +121,7 @@ export default {
           }))
 
           .filter(({ desc, summary, date }) => {
+
             if (desc === 'UB Vacation') {
               return (
                 (summary.includes(username) &&

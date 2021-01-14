@@ -127,10 +127,10 @@ export default {
         return (
           acc +
           (curr.duration ||
-            (curr.summary.includes('반차') ||
-            curr.summary.includes('오전') ||
-            curr.summary.includes('오후')
-              ? 18000000
+            (curr.summary.includes('반차')
+              ? curr.summary.includes('오후')
+                ? 14400000
+                : 18000000
               : 32400000))
         );
       }, 0);
