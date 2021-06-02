@@ -169,6 +169,7 @@ export default {
         return;
       }
       await this.$store.dispatch('schedule/record', this.leaved ? 'IN' : 'OUT');
+      await this.$store.dispatch('user/fetchStatus');
       await this.$store.dispatch('schedule/fetchSchedule');
       this.fetching = false;
     },
