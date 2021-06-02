@@ -28,7 +28,7 @@
       Worked : {{ mine | msToTime }}<br />
       Fully : {{ daywork }}<br />
       Remain : {{ remain }}<br /><br />
-      <span class="commute" @click="commuteLeave">
+      <span v-show="inOffice" class="commute" @click="commuteLeave">
         {{ leaved ? 'Commute' : 'Leave' }} </span><br />
     </div>
     <!--    {(state.account.startsWith('sknah') || connectionState.office) && (leaved !== -1 && (leaved === 0-->
@@ -83,6 +83,9 @@ export default {
     };
   },
   computed: {
+    inOffice() {
+      return this.$store.getters['user/currentIP'] === this.myip.ip;
+    },
     thisMonth() {
       return moment().format('YYYY년 MM월');
     },
