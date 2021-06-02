@@ -9,6 +9,7 @@ export default {
       userId: null,
       username: null,
       onduty: null,
+      currentIP: '127.0.0.1',
     };
   },
 
@@ -30,6 +31,9 @@ export default {
     },
     onduty(state) {
       return state.onduty;
+    },
+    currentIP(state) {
+      return state.currentIP;
     },
   },
 
@@ -68,6 +72,13 @@ export default {
         return;
       }
       state.onduty = onduty;
+    },
+    setCurrentIP(state, currentIP) {
+      if (!currentIP) {
+        state.currentIP = '127.0.0.1';
+        return;
+      }
+      state.currentIP = currentIP;
     },
   },
 
@@ -117,6 +128,18 @@ export default {
         },
       }).then(({ data: { wk_on_duty, wk_status } }) => {
         store.commit('setOnduty', wk_on_duty);
+      });
+    },
+    getCurrentIp(store) {
+      const { auth } = store.getters;
+      if (!auth) return;
+      return axiosInstance.get('/user/wifi/', {
+        headers: {
+          Authorization: `Basic ${auth}`,
+        },
+      }).then(({ data: [{ wifi_address }] }) => {
+        store.commit('setCurrentIP', wifi_address);
+        return wifi_address;
       });
     },
   },

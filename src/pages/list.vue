@@ -141,6 +141,7 @@ export default {
     this.fetching = true;
     if (this.$store.getters['user/isLogin']) {
       await Promise.all([
+        this.$store.dispatch('user/getCurrentIp'),
         this.$store.dispatch('user/fetchStatus'),
         this.$store.dispatch('schedule/fetchSchedule'),
       ]);
@@ -162,6 +163,11 @@ export default {
         }하시겠습니까?\n한번만 누르고, 커먼스페이스앱에서 꼭 확인하세요.`)
       ) return;
       this.fetching = true;
+      if (await this.$store.dispatch('user/getCurrentIp') !== this.myip.ip) {
+        this.fetching = false;
+        alert('회사 WIFI가 아닙니다. 연결후 시도하세요.');
+        return;
+      }
       await this.$store.dispatch('schedule/record', this.leaved ? 'IN' : 'OUT');
       await this.$store.dispatch('schedule/fetchSchedule');
       this.fetching = false;
