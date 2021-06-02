@@ -1,6 +1,6 @@
 <template>
   <div :data-week="week" :class="{ spreaded }" class="item">
-    <div v-if="weekFirst" @click="spread" class="spread">
+    <div v-if="weekFirst" class="spread" @click="spread">
       {{ weekIndex }}주차 {{ spreaded ? '접기' : '펼치기' }}
     </div>
     <span class="durationString">
@@ -9,9 +9,9 @@
     <br v-if="!sameDate" />
     <span>
       {{
-        !isFromCalendar
+        start === '0' ? '' : (!isFromCalendar
           ? `> ${start} ~ ${end}${space(2)}`
-          : `> ${!isToday ? space(6) : ''}`
+          : `> ${!isToday ? space(6) : ''}`)
       }}
       {{ durationString || summary }}
     </span>
@@ -20,6 +20,7 @@
 
 <script>
 import moment from 'moment';
+
 const space = (times) => ' '.repeat(times);
 const today = moment().format('YYYY-MM-DD');
 export default {

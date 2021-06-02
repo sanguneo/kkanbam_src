@@ -1,20 +1,22 @@
-export const getStorage = (key = null) => (key ? JSON.parse(window.localStorage[key] || '{}') : Object.fromEntries(Object.entries(window.localStorage).map(([k, v]) => ([k, JSON.parse(v)]))));
+export const getStorage = (key = null) => (key
+  ? JSON.parse(window.localStorage[key] || '{}')
+  : Object.fromEntries(Object.entries(window.localStorage).map(([k, v]) => [k, JSON.parse(v)])));
 export const setStorage = (key, value) => {
-  window.localStorage[key] = (typeof value === 'object') ? JSON.stringify(value) : value;
+  window.localStorage[key] = typeof value === 'object' ? JSON.stringify(value) : value;
 };
 
-export const getStorageAlbam = (key = null) => {
-  const albamData = getStorage('albamData');
-  return key ? albamData[key] : albamData;
+export const getStorageKkanbam = (key = null) => {
+  const kkanbamData = getStorage('kkanbamData');
+  return key ? kkanbamData[key] : kkanbamData;
 };
 
-export const setStorageAlbam = (key, value, legacy) => {
-  const albamData = getStorage('albamData');
+export const setStorageKkanbam = (key, value, legacy) => {
+  const kkanbamData = getStorage('kkanbamData');
   if (key) {
-    albamData[key] = value;
+    kkanbamData[key] = value;
   } else {
-    Object.assign(albamData, value);
+    Object.assign(kkanbamData, value);
   }
-  setStorage('albamData', legacy ? value : Object.assign(albamData, value));
+  setStorage('kkanbamData', legacy ? value : Object.assign(kkanbamData, value));
   return value;
 };

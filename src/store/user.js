@@ -1,79 +1,123 @@
 import { axiosInstance } from '../apis/commonApi';
-import { setStorageAlbam } from '../shared/utils/Storage';
+import { setStorageKkanbam } from '../shared/utils/Storage';
 
 export default {
   state() {
     return {
-      account: '',
-      username: '',
-      loginToken: '',
-      saveLogin: true,
-      googleLoggedIn: false,
+      email: null,
+      auth: null,
+      userId: null,
+      username: null,
+      onduty: null,
     };
   },
 
   getters: {
-    account(state) {
-      return state.account;
+    email(state) {
+      return state.email;
+    },
+    auth(state) {
+      return state.auth;
     },
     isLogin(state) {
-      return !!state.loginToken;
+      return !!state.email;
     },
-    loginToken(state) {
-      return state.loginToken;
+    userId(state) {
+      return state.userId;
     },
-    googleLoggedIn(state) {
-      return state.googleLoggedIn;
+    username(state) {
+      return state.username;
+    },
+    onduty(state) {
+      return state.onduty;
     },
   },
 
   mutations: {
-    setUser(state, user) {
-      if (!user) {
-        state.account = null;
-        state.loginToken = null;
+    setEmail(state, email) {
+      if (!email) {
+        state.email = null;
         return;
       }
-      const { account, loginToken, username } = user;
-      state.account = account;
-      state.loginToken = loginToken;
+      state.email = email;
+    },
+    setAuth(state, auth) {
+      if (!auth) {
+        state.auth = null;
+        return;
+      }
+      state.auth = auth;
+    },
+    setUserId(state, userId) {
+      if (!userId) {
+        state.userId = null;
+        return;
+      }
+      state.userId = userId;
+    },
+    setUsername(state, username) {
+      if (!username) {
+        state.username = null;
+        return;
+      }
       state.username = username;
     },
-    setLoginToken(state, loginToken) {
-      state.loginToken = loginToken;
-    },
-    setGoogleLoggedIn(state, googleLoggedIn) {
-      state.googleLoggedIn = googleLoggedIn;
+    setOnduty(state, onduty) {
+      if (!onduty) {
+        state.onduty = null;
+        return;
+      }
+      state.onduty = onduty;
     },
   },
 
   actions: {
-    login(store, { account, password }) {
-      axiosInstance
-        .post('/api/auth/token', {
-          account,
-          app_version: '4.0.8',
-          browser_info: '',
-          is_support_ble: 1,
-          os_type: 'ANDROID',
-          os_version: 27,
-          password,
-        })
-        .then(({ data }) => {
-          if (data.return_code !== 200) {
-            throw new Error('로그인 할 수 없습니다.');
-          }
-          return setStorageAlbam(null, {
-            loginToken: data.token,
-            account,
-          });
-        })
-        .then((user) => {
-          store.commit('setUser', user);
+    async login(store, { email, password, saveLogin }) {
+      await axiosInstance.post('/user/get_token/', {
+        email,
+        password,
+      });
+      const auth = btoa(`${email}:${password}`);
+      const {
+        data: { user_profile: { username, user_id: userId } },
+      } = await axiosInstance.get('/user/users/get_profile/', {
+        headers: {
+          Authorization: `Basic ${auth}`,
+        },
+      });
+      if (saveLogin) {
+        setStorageKkanbam(null, {
+          account: btoa(unescape(encodeURIComponent(JSON.stringify({
+            email,
+            auth,
+            userId,
+            username,
+          })))),
+          saveLogin,
         });
+      }
+      store.commit('setEmail', email);
+      store.commit('setAuth', auth);
+      store.commit('setUserId', userId);
+      store.commit('setUsername', username);
     },
     logout(store) {
-      store.commit('setUser');
+      store.commit('setEmail');
+      store.commit('setAuth');
+      store.commit('setUserId');
+      store.commit('setUsername');
+      location.href = '/';
+    },
+    fetchStatus(store) {
+      const { auth } = store.getters;
+      if (!auth) return;
+      return axiosInstance.get('/work/work_status/onduty_status/', {
+        headers: {
+          Authorization: `Basic ${auth}`,
+        },
+      }).then(({ data: { wk_on_duty, wk_status } }) => {
+        store.commit('setOnduty', wk_on_duty);
+      });
     },
   },
 };

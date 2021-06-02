@@ -1,6 +1,5 @@
 <template>
   <div class="defaultlayout">
-    <Gapi />
     <Nuxt />
   </div>
 </template>

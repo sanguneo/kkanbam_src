@@ -1,11 +1,18 @@
-import { getStorageAlbam } from '../shared/utils/Storage';
+import { axiosInstance } from '@/apis/commonApi';
+import { getStorageKkanbam } from '@/shared/utils/Storage';
 
-export default ({ route, redirect, error, store, app: { router } }) => {
+export default ({
+  route, redirect, error, store, app: { router },
+}) => {
   if (process.server) return;
-  const user = getStorageAlbam();
-  store.commit('user/setUser', user);
-  if (!user || !user.account || !user.loginToken) {
-    return;
-  }
-  return true;
+  const account = getStorageKkanbam('account');
+  if (!account) return;
+  const {
+    email, auth, username, userId,
+  } = JSON.parse(decodeURIComponent(escape(atob(account))));
+
+  store.commit('user/setEmail', email);
+  store.commit('user/setAuth', auth);
+  store.commit('user/setUserId', userId);
+  store.commit('user/setUsername', username);
 };

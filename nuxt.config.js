@@ -8,13 +8,13 @@ export default {
    ** Nuxt target
    ** See https://nuxtjs.org/api/configuration-target
    */
-  // target: 'static',
+  target: 'static',
   /*
    ** Headers of the page
    ** See https://nuxtjs.org/api/configuration-head
    */
   head: {
-    title: '깐밤 2.0',
+    title: '깐밤 3.0',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },

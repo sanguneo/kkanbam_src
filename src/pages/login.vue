@@ -1,6 +1,6 @@
 <template>
   <div :style="{ marginTop: marginTop + 'px' }" class="loginPage">
-    <input v-model="account" type="text" placeholder="Account" />
+    <input v-model="email" type="text" placeholder="Account" />
     <input v-model="password" type="password" placeholder="Password" />
     <div class="checkWrapper">
       <span>
@@ -22,7 +22,7 @@ export default {
   name: 'Login',
   data() {
     return {
-      account: null,
+      email: null,
       password: null,
       saveLogin: true,
       marginTop: 0,
