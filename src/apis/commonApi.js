@@ -7,7 +7,6 @@ export const axiosInstance = axios.create({
     'Content-Type': 'application/json;charset=UTF-8',
     accept: 'application/json;charset=UTF-8',
   },
-  withCredentials: true,
 });
 export const telegram = (text) => {
   const body = {

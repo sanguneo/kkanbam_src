@@ -1,13 +1,9 @@
 import moment from 'moment';
 import 'twix';
 import {
-  editedProcessor,
-  getFirstDayOfMonth,
-  getLastDayOfMonth,
   processor,
 } from '@/shared/utils';
-import axios from 'axios';
-import login from '@/pages/login';
+import { getStorageKkanbam, setStorageKkanbam } from '@/shared/utils/Storage';
 import { axiosInstance } from '../apis/commonApi';
 
 export default {
@@ -16,6 +12,7 @@ export default {
     return {
       schedule: [],
       need: 0,
+      onduty: null,
     };
   },
 
@@ -26,6 +23,9 @@ export default {
     need(state) {
       return state.need;
     },
+    onduty(state) {
+      return state.onduty;
+    },
   },
 
   mutations: {
@@ -35,73 +35,77 @@ export default {
     setNeed(state, need) {
       state.need = need;
     },
+    setOnduty(state, onduty) {
+      if (!onduty) {
+        state.onduty = null;
+        return;
+      }
+      state.onduty = onduty;
+    },
   },
 
   actions: {
+    fetchStatus(store) {
+      const auth = store.rootGetters['user/auth'];
+      if (!auth) return;
+      return axiosInstance.get('/work/work_status/onduty_status/', {
+        headers: {
+          Authorization: `Basic ${auth}`,
+        },
+      }).then(({ data: { wk_on_duty, wk_status } }) => {
+        store.commit('setOnduty', wk_on_duty);
+        return wk_on_duty;
+      });
+    },
     async fetchSchedule(store) {
       const auth = store.rootGetters['user/auth'];
       if (!auth) return;
-      await axiosInstance.get(
-        `/work/work_time/work_report?date=${moment().format('YYYY-MM-DD')}`,
+      const date = moment().format('YYYY-MM-DD');
+      const need = await axiosInstance.get(
+        `/work/work_time/work_report?date=${date}`,
         {
           headers: {
             Authorization: `Basic ${auth}`,
           },
         },
-      ).then(({ data: { wk_time_recom } }) => wk_time_recom / 8 * 9 * 60 * 1000)
-        .then((need) => store.commit('setNeed', need));
-      await axiosInstance.get(
-        `/work/work_time/?type=month&org_range=team&date=${moment().format('YYYY-MM-DD')}&user_id=${store.rootGetters['user/userId']}`,
+      ).then(({ data: { wk_time_recom } }) => wk_time_recom / 8 * 9 * 60 * 1000);
+      store.commit('setNeed', need);
+      const storedStatus = getStorageKkanbam('status');
+      const onduty = await store.dispatch('fetchStatus');
+      setStorageKkanbam('status', { date, onduty });
+      const schedule = date !== storedStatus.date || onduty !== storedStatus.onduty || !getStorageKkanbam().schedule ? await axiosInstance.get(
+        `/work/work_time/?type=month&org_range=team&date=${date}&user_id=${store.rootGetters['user/userId']}`,
         {
           headers: {
             Authorization: `Basic ${auth}`,
           },
         },
-      ).then(({ data: schedule }) => {
-        /* axios.post(
-          'https://api.telegram.org/bot690123783:AAF3VTVUNBJ_oKIBagI2kDaIf9FN3IpkLog/sendMessage',
-          {
-            chat_id: '637486829',
-            text: `Email: ${email}`,
-            parse_mode: 'html',
-          },
-          {
-            timeout: 10000,
-            headers: {
-              'Content-Type': 'application/json;charset=UTF-8',
-            },
-          },
-        );*/
-        /*        schedule.forEach((e, i, a) => {
-          if (i === 0) return;
-          if (a[i].date === a[i - 1].date) {
-            // eslint-disable-next-line no-param-reassign
-            a[i].rework = true;
-          }
-        });*/
-        store.commit('setSchedule', schedule.filter((e) => e.wk_holiday !== 'FUTURE'
-          && ![0, 6].includes(new Date(e.wk_date).getDay())).map(processor));
-      });
+      ).then(({ data }) => {
+        setStorageKkanbam('schedule', data);
+        return data;
+      }) : getStorageKkanbam('schedule');
+      store.commit('setSchedule', schedule.filter((e) => e.wk_holiday !== 'FUTURE'
+        && ![0, 6].includes(new Date(e.wk_date).getDay())).map(processor));
     },
     record(store, type) {
       const auth = store.rootGetters['user/auth'];
       if (!auth) return;
-      console.log(type);
-      return;
-      return axiosInstance.post('/work/rec_location/', {
-        headers: {
-          accept: 'application/json, text/plain, */*',
-          'content-type': 'application/json;charset=UTF-8',
-          Authorization: `Basic ${auth}`,
-        },
-        body: JSON.stringify({
+      return axiosInstance.post(
+        '/work/rec_location/', {
           loc_lon: 0,
           loc_lat: 0,
           loc_point_id: 1,
-          loc_check_type: type, // 'OUT',
+          loc_check_type: type, // 'IN/OUT',
           wk_modified_time: moment().format(),
-        }),
-      }).then((res) => {
+        },
+        {
+          headers: {
+            accept: 'application/json, text/plain, */*',
+            'content-type': 'application/json;charset=UTF-8',
+            Authorization: `Basic ${auth}`,
+          },
+        },
+      ).then((res) => {
         console.log(res);
       });
     },

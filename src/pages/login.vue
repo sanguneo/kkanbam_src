@@ -8,8 +8,7 @@
           id="saveLogin"
           v-model="saveLogin"
           type="checkbox"
-          name="saveLogin"
-        />
+          name="saveLogin" />
         <label for="saveLogin">로그인유지</label>
       </span>
     </div>
@@ -28,8 +27,6 @@ export default {
       marginTop: 0,
     };
   },
-  computed: {},
-  created() {},
   mounted() {
     const setMarginTop = () => {
       this.marginTop = Math.floor(window.innerHeight / 2 / 25) * 25 - 50;
@@ -39,7 +36,11 @@ export default {
   },
   methods: {
     login() {
-      this.$store.dispatch('user/login', this.$data);
+      try {
+        this.$store.dispatch('user/login', this.$data);
+      } catch (e) {
+        alert(e);
+      }
     },
   },
 };

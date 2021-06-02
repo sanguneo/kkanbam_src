@@ -17,6 +17,18 @@ export const setStorageKkanbam = (key, value, legacy) => {
   } else {
     Object.assign(kkanbamData, value);
   }
-  setStorage('kkanbamData', legacy ? value : Object.assign(kkanbamData, value));
+  setStorage('kkanbamData', legacy ? value : kkanbamData);
   return value;
+};
+
+export const clearStorage = (key = null) => {
+  if (!key) localStorage.clear();
+  else localStorage.removeItem(key);
+};
+export const clearKkanbamStorage = (key = null) => {
+  const kkanbamData = getStorage('kkanbamData');
+  if (key) {
+    delete kkanbamData[key];
+    setStorageKkanbam(null, kkanbamData, true);
+  } else clearStorage('kkanbamData');
 };

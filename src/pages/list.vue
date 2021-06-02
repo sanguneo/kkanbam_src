@@ -37,7 +37,7 @@
     <div :style="{ top: top - 25 + 'px' }" class="debug">
       {{ myip.ip }}
     </div>
-    <div :style="{ top: top + 'px' }" class="logout">Logout</div>
+    <div :style="{ top: top + 'px' }" class="logout" @click="logout">Logout</div>
     <Wave v-show="fetching" class="fetching" />
   </div>
 </template>
@@ -110,7 +110,7 @@ export default {
       });
     },
     leaved() {
-      return this.$store.getters['user/onduty'] !== 'WORKING';
+      return this.$store.getters['schedule/onduty'] !== 'WORKING';
     },
     mine() {
       return (this.$store.getters['schedule/schedule'] || []).reduce((acc, curr) => (acc + curr.duration), 0);
@@ -145,7 +145,7 @@ export default {
     if (this.$store.getters['user/isLogin']) {
       await Promise.all([
         this.$store.dispatch('user/getCurrentIp'),
-        this.$store.dispatch('user/fetchStatus'),
+        this.$store.dispatch('schedule/fetchStatus'),
         this.$store.dispatch('schedule/fetchSchedule'),
       ]);
     }
@@ -158,6 +158,9 @@ export default {
   methods: {
     spread(week) {
       this.weeksOnMonth[week] = !this.weeksOnMonth[week];
+    },
+    logout() {
+      this.$store.dispatch('user/logout');
     },
     async commuteLeave() {
       if (

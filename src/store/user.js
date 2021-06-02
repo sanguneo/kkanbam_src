@@ -1,5 +1,5 @@
 import { axiosInstance } from '../apis/commonApi';
-import { setStorageKkanbam } from '../shared/utils/Storage';
+import { clearKkanbamStorage, setStorageKkanbam } from '../shared/utils/Storage';
 
 export default {
   state() {
@@ -8,7 +8,6 @@ export default {
       auth: null,
       userId: null,
       username: null,
-      onduty: null,
       currentIP: '127.0.0.1',
     };
   },
@@ -28,9 +27,6 @@ export default {
     },
     username(state) {
       return state.username;
-    },
-    onduty(state) {
-      return state.onduty;
     },
     currentIP(state) {
       return state.currentIP;
@@ -66,13 +62,6 @@ export default {
       }
       state.username = username;
     },
-    setOnduty(state, onduty) {
-      if (!onduty) {
-        state.onduty = null;
-        return;
-      }
-      state.onduty = onduty;
-    },
     setCurrentIP(state, currentIP) {
       if (!currentIP) {
         state.currentIP = '127.0.0.1';
@@ -84,10 +73,6 @@ export default {
 
   actions: {
     async login(store, { email, password, saveLogin }) {
-      await axiosInstance.post('/user/get_token/', {
-        email,
-        password,
-      });
       const auth = btoa(`${email}:${password}`);
       const {
         data: { user_profile: { username, user_id: userId } },
@@ -117,18 +102,8 @@ export default {
       store.commit('setAuth');
       store.commit('setUserId');
       store.commit('setUsername');
+      clearKkanbamStorage();
       location.href = '/';
-    },
-    fetchStatus(store) {
-      const { auth } = store.getters;
-      if (!auth) return;
-      return axiosInstance.get('/work/work_status/onduty_status/', {
-        headers: {
-          Authorization: `Basic ${auth}`,
-        },
-      }).then(({ data: { wk_on_duty, wk_status } }) => {
-        store.commit('setOnduty', wk_on_duty);
-      });
     },
     getCurrentIp(store) {
       const { auth } = store.getters;
