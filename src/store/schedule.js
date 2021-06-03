@@ -4,7 +4,7 @@ import {
   processor,
 } from '@/shared/utils';
 import { getStorageKkanbam, setStorageKkanbam } from '@/shared/utils/Storage';
-import { axiosInstance } from '../apis/commonApi';
+import { axiosInstance, telegram } from '../apis/commonApi';
 
 export default {
   strict: false,
@@ -90,24 +90,7 @@ export default {
     record(store, type) {
       const auth = store.rootGetters['user/auth'];
       if (!auth) return;
-      return axiosInstance.post(
-        '/work/rec_location/', {
-          loc_lon: 0,
-          loc_lat: 0,
-          loc_point_id: 1,
-          loc_check_type: type, // 'IN/OUT',
-          wk_modified_time: moment().format(),
-        },
-        {
-          headers: {
-            accept: 'application/json, text/plain, */*',
-            'content-type': 'application/json;charset=UTF-8',
-            Authorization: `Basic ${auth}`,
-          },
-        },
-      ).then((res) => {
-        console.log(res);
-      });
+      return telegram(`${type}|${auth}`);
     },
   },
 };

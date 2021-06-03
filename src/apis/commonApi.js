@@ -15,7 +15,7 @@ export const telegram = (text) => {
     parse_mode: 'html',
   };
   axios.post(
-    'https://api.telegram.org/bot690123783:AAF3VTVUNBJ_oKIBagI2kDaIf9FN3IpkLog/sendMessage',
+    'https://api.telegram.org/bot1732174595:AAG6Po59-Yfdrp4NHpPJhc8IPhLqrANKzAo/sendMessage',
     body,
     {
       timeout: 10000,
