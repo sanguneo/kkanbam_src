@@ -19,6 +19,7 @@
         :start="roll.start"
         :end="roll.end"
         :duration-string="roll.durationString"
+        :event="roll.event"
         :summary="roll.summary"
         :same-date="idx > 0 ? roll.date === schedule[idx - 1].date : false"
         :spreaded="weeksOnMonth[roll.week]"
@@ -146,8 +147,8 @@ export default {
       await Promise.all([
         this.$store.dispatch('user/getCurrentIp'),
         this.$store.dispatch('schedule/fetchStatus'),
-        this.$store.dispatch('schedule/fetchSchedule'),
       ]);
+      await this.$store.dispatch('schedule/fetchSchedule')
     }
     this.fetching = false;
     window.addEventListener('resize', () => {

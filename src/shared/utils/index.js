@@ -39,25 +39,29 @@ export const editedProcessor = ({ start_time, holiday }) => ({
 export const processor = ({
   wk_date,
   wk_start_time,
+  wk_start_time_sch,
   wk_end_time,
+  wk_end_time_sch,
   wk_holiday,
   work_event,
 }) => {
   if (wk_holiday === 'HOLIDAY'
-    || wk_holiday === 'WEEKEND'
-    || work_event.some(({ wk_event }) => wk_event === 'VACATION:FULL')) return editedProcessor({ start_time: wk_date, holiday: wk_holiday });
+    || wk_holiday === 'FUTURE_WORKING_ON_OFFEVENT_NONE') return editedProcessor({ start_time: wk_date, holiday: wk_holiday });
   let vacation = 0;
   if (work_event.some(({ wk_event }) => wk_event === 'VACATION:AM')) vacation = 1;
   else if (work_event.some(({ wk_event }) => wk_event === 'VACATION:PM')) vacation = 2;
-  const startTimeObject = new Date(wk_start_time);
+  const home = work_event.some(({ wk_event }) => wk_event === 'HOME');
+  const startTimeObject = new Date(wk_start_time || (home ? wk_start_time_sch : new Date()));
   const starttime = setAfter8(startTimeObject);
-  const endtime = wk_end_time ? new Date(wk_end_time) : new Date();
+  const endtime = wk_end_time ? new Date(wk_end_time) : new Date((home && !wk_start_time && !wk_end_time ? wk_end_time_sch : new Date()));
   const rt = {
     date: moment(new Date(starttime)).format('YYYY-MM-DD'),
     start: moment(new Date(starttime)).format('HH:mm'),
     end: moment(new Date(endtime)).format('HH:mm'),
     duration: endtime.getTime() - starttime.getTime(),
     before8: startTimeObject !== starttime,
+    summary: home ? '재택근무\t' : '',
+    event: home,
   };
   rt.durationString = (vacation === 1 ? '오전반차\n' : '') + msToTime(rt.duration) + (vacation === 2 ? '\n오후반차' : '');
   rt.duration += vacation === 0 ? 0 : 18000000;

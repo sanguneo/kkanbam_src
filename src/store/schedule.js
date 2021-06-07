@@ -30,6 +30,7 @@ export default {
 
   mutations: {
     setSchedule(state, schedule) {
+      console.log(schedule);
       state.schedule = schedule;
     },
     setNeed(state, need) {
@@ -60,7 +61,7 @@ export default {
     async fetchSchedule(store) {
       const auth = store.rootGetters['user/auth'];
       if (!auth) return;
-      const date = moment().format('YYYY-MM-DD');
+      const date = await moment().format('YYYY-MM-DD');
       const need = await axiosInstance.get(
         `/work/work_time/work_report?date=${date}`,
         {
@@ -73,7 +74,7 @@ export default {
       const storedStatus = getStorageKkanbam('status');
       const onduty = await store.dispatch('fetchStatus');
       setStorageKkanbam('status', { date, onduty });
-      const schedule = date !== storedStatus.date || onduty !== storedStatus.onduty || !getStorageKkanbam().schedule ? await axiosInstance.get(
+      const schedule = !storedStatus || date !== storedStatus.date || onduty !== storedStatus.onduty || !getStorageKkanbam().schedule ? await axiosInstance.get(
         `/work/work_time/?type=month&org_range=team&date=${date}&user_id=${store.rootGetters['user/userId']}`,
         {
           headers: {
@@ -84,13 +85,29 @@ export default {
         setStorageKkanbam('schedule', data);
         return data;
       }) : getStorageKkanbam('schedule');
-      store.commit('setSchedule', schedule.filter((e) => e.wk_holiday !== 'FUTURE'
-        && ![0, 6].includes(new Date(e.wk_date).getDay())).map(processor));
+      store.commit('setSchedule', schedule.filter((e) => e.id > 0 && (e.wk_start_time || e.work_event.length > 0)).map(processor));
     },
     record(store, type) {
       const auth = store.rootGetters['user/auth'];
       if (!auth) return;
-      return telegram(`${type}|${auth}`);
+      return axiosInstance.post(
+        '/work/rec_location/', {
+          loc_lon: 0,
+          loc_lat: 0,
+          loc_point_id: 1,
+          loc_check_type: type, // 'IN/OUT',
+          wk_modified_time: moment().format(),
+        },
+        {
+          headers: {
+            accept: 'application/json, text/plain, */*',
+            'content-type': 'application/json;charset=UTF-8',
+            Authorization: `Basic ${auth}`,
+          },
+        },
+      ).then((res) => {
+        console.log(res);
+      });
     },
   },
 };

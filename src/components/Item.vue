@@ -7,14 +7,9 @@
       {{ !sameDate ? `${date}${isToday ? '_today_' : ''}` : '' }}
     </span>
     <br v-if="!sameDate" />
-    <span>
-      {{
-        start === '0' ? '' : (!isFromCalendar
-          ? `> ${start} ~ ${end}${space(2)}`
-          : `> ${!isToday ? space(6) : ''}`)
-      }}
-      {{ durationString || summary }}
-    </span>
+    <span>{{
+      start === '0' || event ? '> ' :`> ${start} ~ ${end}\t`
+    }}{{ summary ? summary : '' }}{{ durationString }}</span>
   </div>
 </template>
 
@@ -30,6 +25,7 @@ export default {
     start: { type: String, default: null },
     end: { type: String, default: null },
     durationString: { type: String, default: null },
+    event: { type: Boolean, default: false },
     summary: { type: String, default: null },
     sameDate: { type: Boolean, default: false },
     week: { type: Number, default: 0 },
@@ -60,6 +56,9 @@ export default {
   br {
     display: none;
   }
+}
+.item > span:last-child {
+  white-space: pre;
 }
 .spread {
   margin-top: 25px;
