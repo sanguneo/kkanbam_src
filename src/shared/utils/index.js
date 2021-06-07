@@ -1,4 +1,6 @@
 import moment from 'moment';
+import expectedDay from '../exceptedDay.json';
+
 
 export const weekwork = (time = 45) => 1000 * 60 * 60 * time;
 
@@ -28,12 +30,12 @@ const setAfter8 = (date) => {
   return date < eightAM ? eightAM : date;
 };
 
-export const editedProcessor = ({ start_time, holiday }) => ({
+export const editedProcessor = ({ wk_date, start_time, work_event }) => ({
   date: moment(new Date(start_time)).format('YYYY-MM-DD'),
   start: '0',
   end: '0',
   duration: 1000 * 60 * 60 * 9,
-  durationString: '휴무/외부',
+  durationString: `${work_event || expectedDay[wk_date] || '휴무/외부'}\t09:00`,
 });
 
 export const processor = ({
@@ -46,7 +48,7 @@ export const processor = ({
   work_event,
 }) => {
   if (wk_holiday === 'HOLIDAY_WORKING_OFF_NONE_INOUT'
-    || wk_holiday === 'FUTURE_WORKING_ON_OFFEVENT_NONE') return editedProcessor({ start_time: wk_date, holiday: wk_holiday });
+    || wk_holiday === 'FUTURE_WORKING_ON_OFFEVENT_NONE') return editedProcessor({ wk_date, start_time: wk_date, work_event: work_event.length > 0 && work_event[0].wk_event.split(':').pop() });
   let vacation = 0;
   if (work_event.some(({ wk_event }) => wk_event === 'VACATION:AM')) vacation = 1;
   else if (work_event.some(({ wk_event }) => wk_event === 'VACATION:PM')) vacation = 2;

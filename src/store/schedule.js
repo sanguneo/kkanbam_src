@@ -85,7 +85,8 @@ export default {
         setStorageKkanbam('schedule', data);
         return data;
       }) : getStorageKkanbam('schedule');
-      store.commit('setSchedule', schedule.filter((e) => e.id > 0 && (e.wk_start_time || e.work_event.length > 0)).map(processor));
+      store.commit('setSchedule', schedule.filter((e) => (e.wk_start_time || e.work_event.length > 0) && e.wk_holiday !== 'FUTURE_WORKING_ON_NONE_INOUT'
+      && e.wk_holiday !== 'WEEKEND_WORKING_OFF_NONE_INOUT').map(processor));
     },
     record(store, type) {
       const auth = store.rootGetters['user/auth'];
