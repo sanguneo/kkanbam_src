@@ -61,7 +61,7 @@ export const processor = ({
     date: moment(new Date(starttime)).format('YYYY-MM-DD'),
     start: moment(new Date(starttime)).format('HH:mm'),
     end: moment(new Date(endtime)).format('HH:mm'),
-    duration: duration > 32400000 ? 32400000 : duration,
+    duration: home && duration > 32400000 ? 32400000 : duration,
     before8: startTimeObject !== starttime,
     summary: home ? '재택근무\t' : '',
     event: home,
