@@ -56,17 +56,18 @@ export const processor = ({
   const startTimeObject = new Date(wk_start_time || (home ? wk_start_time_sch : new Date()));
   const starttime = setAfter8(startTimeObject);
   const endtime = wk_end_time ? new Date(wk_end_time) : new Date((home && !wk_start_time && !wk_end_time ? wk_end_time_sch : new Date()));
+  const duration = endtime.getTime() - starttime.getTime();
   const rt = {
     date: moment(new Date(starttime)).format('YYYY-MM-DD'),
     start: moment(new Date(starttime)).format('HH:mm'),
     end: moment(new Date(endtime)).format('HH:mm'),
-    duration: endtime.getTime() - starttime.getTime(),
+    duration: duration > 32400000 ? 32400000 : duration,
     before8: startTimeObject !== starttime,
     summary: home ? '재택근무\t' : '',
     event: home,
   };
   rt.durationString = (vacation === 1 ? '오전반차\n' : '') + msToTime(rt.duration) + (vacation === 2 ? '\n오후반차' : '');
-  rt.duration += vacation === 0 ? 0 : 18000000;
+  rt.duration += vacation === 0 ? 0 : 14400000;
   return rt;
 };
 
