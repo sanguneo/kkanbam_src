@@ -66,7 +66,7 @@ export const processor = ({
     summary: home ? '재택근무\t' : '',
     event: home,
   };
-  rt.durationString = (vacation === 1 ? `오전반차\t${msToTime(14400000)}\n` : '') + msToTime(rt.duration) + (vacation === 2 ? `\n오후반차\t${msToTime(14400000)}` : '');
+  rt.durationString = (vacation === 1 ? `> 오전반차\t${msToTime(14400000)}\n` : '') + msToTime(rt.duration) + (vacation === 2 ? `\n> 오후반차\t${msToTime(14400000)}` : '');
   rt.duration += vacation === 0 ? 0 : 14400000;
   return rt;
 };
