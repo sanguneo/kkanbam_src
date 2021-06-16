@@ -47,8 +47,8 @@ export const processor = ({
   wk_holiday,
   work_event,
 }) => {
-  if (wk_holiday === 'HOLIDAY_WORKING_OFF_NONE_INOUT'
-    || wk_holiday === 'FUTURE_WORKING_ON_OFFEVENT_NONE') return editedProcessor({ wk_date, start_time: wk_date, work_event: work_event.length > 0 && work_event[0].wk_event.split(':').pop() });
+  if (wk_holiday.startsWith('HOLIDAY_WORKING_OFF')
+    || wk_holiday.endsWith('OFFEVENT_NONE')) return editedProcessor({ wk_date, start_time: wk_date, work_event: work_event.length > 0 && work_event[0].wk_event.split(':').pop() });
   let vacation = 0;
   if (work_event.some(({ wk_event }) => wk_event === 'VACATION:AM')) vacation = 1;
   else if (work_event.some(({ wk_event }) => wk_event === 'VACATION:PM')) vacation = 2;
