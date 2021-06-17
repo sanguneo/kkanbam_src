@@ -58,7 +58,7 @@ export default {
         return wk_on_duty;
       });
     },
-    async fetchSchedule(store) {
+    async fetchSchedule(store, force=false) {
       const auth = store.rootGetters['user/auth'];
       if (!auth) return;
       const date = await moment().format('YYYY-MM-DD');
@@ -74,7 +74,7 @@ export default {
       const storedStatus = getStorageKkanbam('status');
       const onduty = await store.dispatch('fetchStatus');
       setStorageKkanbam('status', { date, onduty });
-      const schedule = !storedStatus || date !== storedStatus.date || onduty !== storedStatus.onduty || !getStorageKkanbam().schedule ? await axiosInstance.get(
+      const schedule = force || !storedStatus || date !== storedStatus.date || onduty !== storedStatus.onduty || !getStorageKkanbam().schedule ? await axiosInstance.get(
         `/work/work_time/?type=month&org_range=team&date=${date}&user_id=${store.rootGetters['user/userId']}`,
         {
           headers: {

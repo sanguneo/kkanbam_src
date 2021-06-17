@@ -1,6 +1,6 @@
 <template>
   <div class="listPage">
-    <div class="whatWeek">
+    <div class="whatWeek" @click="force">
       {{ thisMonth }}
       <!--      <span onClick={() => scheduleActions.moveWeek('p')}>P </span>-->
       <!--      {moment(scheduleState.thisMonday).format('YYYY-MM-DD')} ~ {moment(scheduleState.thisMonday + 518400000).format('YYYY-MM-DD')}-->
@@ -157,6 +157,11 @@ export default {
     this.top = (Math.floor(window.innerHeight / 25) - 1) * 25;
   },
   methods: {
+    async force() {
+      this.fetching = true;
+      await this.$store.dispatch('schedule/fetchSchedule', true);
+      this.fetching = false;
+    },
     spread(week) {
       this.weeksOnMonth[week] = !this.weeksOnMonth[week];
     },
