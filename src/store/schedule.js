@@ -58,7 +58,7 @@ export default {
         return wk_on_duty;
       });
     },
-    async fetchSchedule(store, force=false) {
+    async fetchSchedule(store, force = false) {
       const auth = store.rootGetters['user/auth'];
       if (!auth) return;
       const date = await moment().format('YYYY-MM-DD');
@@ -108,6 +108,7 @@ export default {
         },
       ).then((res) => {
         console.log(res);
+        alert(JSON.stringify(res, null, 2));
       });
     },
   },
