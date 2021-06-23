@@ -5,6 +5,7 @@ export default ({
   route, redirect, error, store, app: { router },
 }) => {
   if (process.server) return;
+  store.dispatch('schedule/getExpectedDate');
   const account = getStorageKkanbam('account');
   if (!account) return;
   const {

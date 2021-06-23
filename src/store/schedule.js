@@ -4,6 +4,7 @@ import {
   processor,
 } from '@/shared/utils';
 import { getStorageKkanbam, setStorageKkanbam } from '@/shared/utils/Storage';
+import axios from 'axios';
 import { axiosInstance, telegram } from '../apis/commonApi';
 
 export default {
@@ -13,6 +14,7 @@ export default {
       schedule: [],
       need: 0,
       onduty: null,
+      expectedDate: [],
     };
   },
 
@@ -26,11 +28,13 @@ export default {
     onduty(state) {
       return state.onduty;
     },
+    expectedDate(state) {
+      return state.expectedDate;
+    },
   },
 
   mutations: {
     setSchedule(state, schedule) {
-      console.log(schedule);
       state.schedule = schedule;
     },
     setNeed(state, need) {
@@ -42,6 +46,9 @@ export default {
         return;
       }
       state.onduty = onduty;
+    },
+    setExpectedDate(state, expectedDate) {
+      state.expectedDate = expectedDate;
     },
   },
 
@@ -61,6 +68,7 @@ export default {
     async fetchSchedule(store, force = false) {
       const auth = store.rootGetters['user/auth'];
       if (!auth) return;
+      const { expectedDate } = store.getters;
       const date = await moment().format('YYYY-MM-DD');
       const need = await axiosInstance.get(
         `/work/work_time/work_report?date=${date}`,
@@ -86,7 +94,7 @@ export default {
         return data;
       }) : getStorageKkanbam('schedule');
       store.commit('setSchedule', schedule.filter((e) => ((e.wk_start_time || e.work_event.length > 0) && e.wk_holiday !== 'FUTURE_WORKING_ON_NONE_INOUT'
-      && e.wk_holiday !== 'WEEKEND_WORKING_OFF_NONE_INOUT') || (e.wk_holiday.startsWith('HOLIDAY_WORKING_OFF') && ((day) => (day > 0 && day < 6))(new Date(e.wk_date).getDay()))).map(processor));
+      && e.wk_holiday !== 'WEEKEND_WORKING_OFF_NONE_INOUT') || (e.wk_holiday.startsWith('HOLIDAY_WORKING_OFF') && ((day) => (day > 0 && day < 6))(new Date(e.wk_date).getDay()))).map((item) => processor(item, expectedDate)));
     },
     record(store, type) {
       const auth = store.rootGetters['user/auth'];
@@ -107,8 +115,13 @@ export default {
           },
         },
       ).then((res) => {
-        console.log(res);
         alert(JSON.stringify(res, null, 2));
+      });
+    },
+    getExpectedDate(store) {
+      return axios.get('/expectedDate.json').then(({ data }) => {
+        store.commit('setExpectedDate', data);
+        return data;
       });
     },
   },

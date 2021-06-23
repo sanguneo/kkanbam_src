@@ -1,7 +1,6 @@
 import moment from 'moment';
 import expectedDay from '../exceptedDay.json';
 
-
 export const weekwork = (time = 45) => 1000 * 60 * 60 * time;
 
 export function getFirstDayOfMonth(tday = new Date()) {
@@ -30,12 +29,12 @@ const setAfter8 = (date) => {
   return date < eightAM ? eightAM : date;
 };
 
-export const editedProcessor = ({ wk_date, start_time, work_event }) => ({
+export const editedProcessor = ({ wk_date, start_time, work_event }, expectedDateAdminDefined) => ({
   date: moment(new Date(start_time)).format('YYYY-MM-DD'),
   start: '0',
   end: '0',
   duration: 1000 * 60 * 60 * 9,
-  durationString: `${work_event || expectedDay[wk_date] || '휴무/외부'}\t09:00`,
+  durationString: `${work_event || expectedDay[wk_date] || expectedDateAdminDefined[wk_date][0] || '휴무/외부'}\t09:00`,
 });
 
 export const processor = ({
@@ -46,13 +45,13 @@ export const processor = ({
   wk_end_time_sch,
   wk_holiday,
   work_event,
-}) => {
+}, expectedDate) => {
   if (wk_holiday.startsWith('HOLIDAY_WORKING_OFF')
-    || wk_holiday.endsWith('OFFEVENT_NONE')) return editedProcessor({ wk_date, start_time: wk_date, work_event: work_event.length > 0 && work_event[0].wk_event.split(':').pop() });
+    || wk_holiday.endsWith('OFFEVENT_NONE')) return editedProcessor({ wk_date, start_time: wk_date, work_event: work_event.length > 0 && work_event[0].wk_event.split(':').pop() }, expectedDate);
   let vacation = 0;
   if (work_event.some(({ wk_event }) => wk_event === 'VACATION:AM')) vacation = 1;
   else if (work_event.some(({ wk_event }) => wk_event === 'VACATION:PM')) vacation = 2;
-  const home = work_event.some(({ wk_event }) => wk_event === 'HOME');
+  const home = expectedDate[wk_date] ? expectedDate[wk_date][1] === 'away' : work_event.some(({ wk_event }) => wk_event === 'HOME');
   const startTimeObject = new Date(wk_start_time || (home ? wk_start_time_sch : new Date()));
   const starttime = setAfter8(startTimeObject);
   const endtime = wk_end_time ? new Date(wk_end_time) : new Date((home && !wk_start_time && !wk_end_time ? wk_end_time_sch : new Date()));
