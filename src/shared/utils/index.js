@@ -34,7 +34,7 @@ export const editedProcessor = ({ wk_date, start_time, work_event }, expectedDat
   start: '0',
   end: '0',
   duration: 1000 * 60 * 60 * 9,
-  durationString: `${work_event || expectedDay[wk_date] || expectedDateAdminDefined[wk_date][0] || '휴무/외부'}\t09:00`,
+  durationString: `${work_event || expectedDay[wk_date] || (expectedDateAdminDefined&& expectedDateAdminDefined[wk_date] && expectedDateAdminDefined[wk_date][0] ? expectedDateAdminDefined[wk_date][0] : null) || '휴무/외부'}\t09:00`,
 });
 
 export const processor = ({
