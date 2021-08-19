@@ -1,5 +1,6 @@
 import moment from 'moment';
 import expectedDay from '../exceptedDay.json';
+import {getStorageKkanbam} from "@/shared/utils/Storage";
 
 export const weekwork = (time = 45) => 1000 * 60 * 60 * time;
 
@@ -58,7 +59,8 @@ export const processor = ({
   let vacation = 0;
   if (work_event.some(({ wk_event }) => wk_event === 'VACATION:AM')) vacation = 1;
   else if (work_event.some(({ wk_event }) => wk_event === 'VACATION:PM')) vacation = 2;
-  const home = expectedDate[wk_date] ? expectedDate[wk_date][1] === 'away' : work_event.some(({ wk_event }) => wk_event === 'HOME');
+  const remote = getStorageKkanbam('remote') || [];
+  const home = remote.includes(wk_date) || (expectedDate[wk_date] ? expectedDate[wk_date][1] === 'away' : work_event.some(({ wk_event }) => wk_event === 'HOME'));
   const startTimeObject = new Date(wk_start_time || (home ? wk_start_time_sch : new Date()));
   const starttime = setAfter8(startTimeObject);
   const endtime = wk_end_time ? new Date(wk_end_time) : new Date((home && !wk_start_time && !wk_end_time ? wk_end_time_sch : new Date()));
