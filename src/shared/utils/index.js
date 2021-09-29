@@ -1,6 +1,6 @@
 import moment from 'moment';
+import { getStorageKkanbam } from '@/shared/utils/Storage';
 import expectedDay from '../exceptedDay.json';
-import {getStorageKkanbam} from "@/shared/utils/Storage";
 
 export const weekwork = (time = 45) => 1000 * 60 * 60 * time;
 
@@ -35,7 +35,7 @@ export const editedProcessor = ({ wk_date, start_time, work_event }, expectedDat
   start: '0',
   end: '0',
   duration: 1000 * 60 * 60 * 9,
-  durationString: `${work_event || expectedDay[wk_date] || (expectedDateAdminDefined&& expectedDateAdminDefined[wk_date] && expectedDateAdminDefined[wk_date][0] ? expectedDateAdminDefined[wk_date][0] : null) || '휴무/외부'}\t09:00`,
+  durationString: `${work_event || expectedDay[wk_date] || (expectedDateAdminDefined && expectedDateAdminDefined[wk_date] && expectedDateAdminDefined[wk_date][0] ? expectedDateAdminDefined[wk_date][0] : null) || '휴무/외부'}\t09:00`,
 });
 
 export const processor = ({
@@ -69,13 +69,13 @@ export const processor = ({
     date: moment(new Date(starttime)).format('YYYY-MM-DD'),
     start: moment(new Date(starttime)).format('HH:mm'),
     end: moment(new Date(endtime)).format('HH:mm'),
-    duration: home && duration > 32400000 ? 32400000 : duration,
+    duration: home && (duration > 32400000) ? 32400000 : duration,
     before8: startTimeObject !== starttime,
     summary: home ? '재택근무\t' : '',
     event: home,
   };
   rt.durationString = (vacation === 1 ? `> 오전반차\t${msToTime(14400000)}\n` : '') + msToTime(rt.duration) + (vacation === 2 ? `\n> 오후반차\t${msToTime(14400000)}` : '');
-  rt.duration += vacation === 0 ? 0 : 14400000;
+  if (!home) rt.duration += vacation === 0 ? 0 : 14400000;
   return rt;
 };
 

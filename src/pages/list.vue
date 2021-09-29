@@ -45,12 +45,12 @@
 
 <script>
 import moment from 'moment';
-import Wave from '~/components/Wave.vue';
 import {
   getFirstDayOfMonth,
   getLastDayOfMonth,
   msToTime,
 } from '../shared/utils';
+import Wave from '~/components/Wave.vue';
 
 function weeksOnMonth(date = new Date()) {
   const fw = moment(getFirstDayOfMonth(date)).week();
@@ -121,16 +121,19 @@ export default {
     },
     remain() {
       return (
-        (this.need < this.mine ? '(초과)' : '')
-        + msToTime(Math.abs(this.need - this.mine))
+        (this.dayworkMs < this.mine ? '(초과)' : '')
+        + msToTime(Math.abs(this.dayworkMs - this.mine))
       );
     },
+    dayworkMs() {
+      return Array.from(new Set(this.schedule.map((e) => e.date))).length
+        * 9
+        * 60
+        * 60
+        * 1000;
+    },
     daywork() {
-      return msToTime(Array.from(new Set(this.schedule.map((e) => e.date))).length
-          * 9
-          * 60
-          * 60
-          * 1000);
+      return msToTime(this.dayworkMs);
     },
   },
   created() {
@@ -148,7 +151,7 @@ export default {
         this.$store.dispatch('user/getCurrentIp'),
         this.$store.dispatch('schedule/fetchStatus'),
       ]);
-      await this.$store.dispatch('schedule/fetchSchedule')
+      await this.$store.dispatch('schedule/fetchSchedule');
     }
     this.fetching = false;
     window.addEventListener('resize', () => {
